@@ -3,6 +3,7 @@ const request = require('supertest');
 const app = require('../lib/app');
 const pool = require('../lib/utils/pool');
 const Book = require('../lib/models/Book');
+const Page = require('../lib/models/Page');
 
 describe('app endpoints', () => {
 
@@ -84,7 +85,7 @@ describe('app endpoints', () => {
       .post('/api/v1/pages')
       .send({
         text: 'youre a wizard, harry!',
-        book_id: `${book.id}`
+        bookId: `${book.id}`
       });
       
     expect(res.body).toEqual({
@@ -94,6 +95,31 @@ describe('app endpoints', () => {
     });
   });
 
-  
+  it('should get a page by id using GET', async() => {
+    const book = await Book.insert({ title: 'Harry Potter', author: 'J.K. Rowling', genre: 'Fantasy' });
+    const page = await Page.insert({ text: 'youre a wizard, harry!', bookId: book.id });
+
+    const res = await request(app)
+      .get(`/api/v1/pages/${page.id}`);
+
+    expect(res.body).toEqual(page);
+  });
+
+  it('should update a page using PUT', async() => {
+    const book = await Book.insert({ title: 'Harry Potter', author: 'J.K. Rowling', genre: 'Fantasy' });
+    const page = await Page.insert({ text: 'youre a wizard, harry!', bookId: book.id });
+
+    const res = await request(app)
+      .put(`/api/v1/pages/${page.id}`)
+      .send({
+        text: 'something else'
+      });
+
+    expect(res.body).toEqual({
+      id: page.id,
+      text: 'something else',
+      bookId: book.id
+    });
+  });
 
 });
