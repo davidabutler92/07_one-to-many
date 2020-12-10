@@ -32,6 +32,10 @@ describe('app endpoints', () => {
     });
   });
 
+  it('should get all books', async() => {
+
+  });
+
   it('should get a book by id using GET', async() => {
     const book = await Book.insert({ 
       title: 'Eragon', 
@@ -58,7 +62,7 @@ describe('app endpoints', () => {
 
     expect(res.body).toEqual({
       ...book,
-      pages
+      pages: expect.arrayContaining(pages)
     });
   });
 
