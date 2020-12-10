@@ -38,11 +38,28 @@ describe('app endpoints', () => {
       author: 'Christopher Paolini', 
       genre: 'Fantasy' 
     });
+    const pages = await Promise.all([
+      {
+        text: 'hello WORLD',
+        bookId: book.id
+      },
+      {
+        text: 'something else',
+        bookId: book.id
+      },
+      {
+        text: 'brand NEW text',
+        bookId: book.id
+      }
+    ].map(page => Page.insert(page)));
 
     const res = await request(app)
       .get(`/api/v1/books/${book.id}`);
 
-    expect(res.body).toEqual(book);
+    expect(res.body).toEqual({
+      ...book,
+      pages
+    });
   });
 
   it('should update a book by id using PUT', async() => {
@@ -120,6 +137,16 @@ describe('app endpoints', () => {
       text: 'something else',
       bookId: book.id
     });
+  });
+
+  it('should delete a page using DELETE', async() => {
+    const book = await Book.insert({ title: 'Harry Potter', author: 'J.K. Rowling', genre: 'Fantasy' });
+    const page = await Page.insert({ text: 'youre a wizard, harry!', bookId: book.id });
+
+    const res = await request(app)
+      .delete(`/api/v1/pages/${page.id}`);
+
+    expect(page).toEqual(res.body);
   });
 
 });
