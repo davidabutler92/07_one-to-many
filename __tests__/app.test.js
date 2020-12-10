@@ -76,5 +76,24 @@ describe('app endpoints', () => {
     expect(res.body).toEqual(book);
   });
 
+  //testing routes for Page model
+
+  it('should create a new page using POST', async() => {
+    const book = await Book.insert({ title: 'Harry Potter', author: 'J.K. Rowling', genre: 'Fantasy' });
+    const res = await request(app)
+      .post('/api/v1/pages')
+      .send({
+        text: 'youre a wizard, harry!',
+        book_id: `${book.id}`
+      });
+      
+    expect(res.body).toEqual({
+      id: '1',
+      text: 'youre a wizard, harry!',
+      bookId: book.id
+    });
+  });
+
+  
 
 });
