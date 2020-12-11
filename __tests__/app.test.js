@@ -66,7 +66,7 @@ describe('app endpoints', () => {
     });
   });
 
-  it.only('should get all books using GET', async() => {
+  it('should get all books using GET', async() => {
     const books = await Promise.all([
       {
         title: 'book one',
@@ -82,8 +82,7 @@ describe('app endpoints', () => {
         title: 'book three',
         author: 'shmit shmitster',
         genre: 'fantasy'
-      }
-      
+      }  
     ].map(book => Book.insert(book)));
 
     const res = await request(app)
@@ -151,6 +150,31 @@ describe('app endpoints', () => {
       .get(`/api/v1/pages/${page.id}`);
 
     expect(res.body).toEqual(page);
+  });
+
+
+  it.only('should get all pages using GET', async() => {
+    const book = await Book.insert({ title: 'Harry Potter', author: 'J.K. Rowling', genre: 'Fantasy' });
+    const pages = await Promise.all([
+      {
+        text: 'HARRY POTTER!!!!',
+        bookId: book.id
+      },
+      {
+        text: 'something else',
+        bookId: book.id
+      },
+      {
+        text: 'dat new new text',
+        bookId: book.id
+      }
+    ].map(page => Page.insert(page)));
+
+    const res = await request(app)
+      .get('/api/v1/pages');
+
+    expect(res.body).toEqual(expect.arrayContaining(pages));
+    expect(res.body).toHaveLength(pages.length);
   });
 
   it('should update a page using PUT', async() => {
