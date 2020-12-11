@@ -66,6 +66,33 @@ describe('app endpoints', () => {
     });
   });
 
+  it.only('should get all books using GET', async() => {
+    const books = await Promise.all([
+      {
+        title: 'book one',
+        author: 'shmit shmitster',
+        genre: 'sci-fi'
+      },
+      {
+        title: 'book two',
+        author: 'shmit shmitster',
+        genre: 'horror'
+      },
+      {
+        title: 'book three',
+        author: 'shmit shmitster',
+        genre: 'fantasy'
+      }
+      
+    ].map(book => Book.insert(book)));
+
+    const res = await request(app)
+      .get('/api/v1/books');
+
+    expect(res.body).toEqual(expect.arrayContaining(books));
+    expect(res.body).toHaveLength(books.length);
+  });
+
   it('should update a book by id using PUT', async() => {
     const book = await Book.insert({
       title: 'A new book',
