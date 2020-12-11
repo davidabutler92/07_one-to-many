@@ -153,7 +153,7 @@ describe('app endpoints', () => {
   });
 
 
-  it.only('should get all pages using GET', async() => {
+  it('should get all pages using GET', async() => {
     const book = await Book.insert({ title: 'Harry Potter', author: 'J.K. Rowling', genre: 'Fantasy' });
     const pages = await Promise.all([
       {
